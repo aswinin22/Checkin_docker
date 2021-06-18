@@ -1,0 +1,153 @@
+body {
+  font-family: 'Nunito', sans-serif;
+}
+
+h1 {
+    color: #6aa84f;
+    text-align: center;
+    padding: 25px;
+}
+
+input{
+    padding: 10px;
+    border: 1px solid #ddd;
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    font-size: 30px;
+    margin: 2px;
+    border-radius: 15px;
+    background-color: #eeeeee;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+  background-color: #22003b;
+  color: white;
+}
+
+.error-status {
+  font-size: 25px;
+  font-weight: 600;
+  margin: 0;
+  color: #c00024;
+  -webkit-animation: blink 2s ease-in-out infinite alternate;
+  -moz-animation: blink 2s ease-in-out infinite alternate;
+  animation: blink 2s ease-in-out infinite alternate;
+}
+
+.row3 {
+  margin-top: 10px;
+
+}
+.authentication {
+	width: 50%;
+	height: 25%;
+	position: absolute;
+	top:45%;
+	left:25%;
+	background-color: #cdcdcd;
+	border-radius: 10px;
+}
+
+.content {
+  max-width: 80%;
+  margin: auto;
+  margin-top: 10%; 
+}
+
+.button {
+  display: inline-block;
+  padding: 25px 35px;
+  font-size: 18px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #22003b;
+  opacity: 0.7;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 2px 2px #AAA;
+  font-family: 'Nunito', sans-serif;
+}
+
+.button:hover {opacity: 0.9;}
+
+.button:active {
+  opacity: 0.9;
+  box-shadow: 2px 2px #666;
+  transform: translateY(4px);
+}
+
+.choice-button{
+  width:165px;
+  margin: 5px;
+}
+
+.center-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-div {
+  display: none;
+}
+
+.auth-div {
+  display: none;
+}
+
+.loader-div {
+  display: flex;
+}
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #3498db;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@-webkit-keyframes  blink{
+0%{-webkit-opacity: 0;}
+25%{-webkit-opacity: 1;}
+50%{-webkit-opacity: 1;}
+75%{-webkit-opacity: 1;}
+100%{-webkit-opacity: 0;}
+}
+
+@keyframes blink{
+0%{opacity: 0;}
+25%{opacity: 1;}
+50%{opacity: 1;}
+75%{opacity: 1;}
+100%{opacity: 0;}
+}

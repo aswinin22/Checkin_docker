@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}">
+	<link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<title>Walmart Store Check-in</title>
+	 <script>
+		var loaderDisplayed = true;
+		var loaderCount = 0;
+		var state;
+		var intervalID = setInterval(
+			function(){
+				$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+            			$.getJSON($SCRIPT_ROOT+"/read_state",
+					function(data) {
+						state = data.state;
+						if (state == "locked" || state == "locked_error"){
+							if (loaderDisplayed) {
+								displayButton();
+							}
+							document.getElementById("access-status").innerHTML = "STATUS: Parked & Ready for Access";
+							document.getElementById("choice-state").innerHTML = "Start";
+						} else if (state == "unlocked" || state == "unlocked_error") {
+							if (loaderDisplayed) {
+								displayButton();
+							}
+							document.getElementById("access-status").innerHTML = "STATUS: Loading/Unloading in Progress...";
+							document.getElementById("choice-state").innerHTML = "End";
+						} else if (state == "ontrip") {
+							document.getElementById("access-status").innerHTML = "STATUS: AV Initiating Trip. Please step aside.";
+							displayLoader();
+						}
+                			});
+				/*
+				if (loaderDisplayed){
+					if (loaderCount>=1) {
+						loaderCount = 0;
+						displayButton();
+					} else {
+						loaderCount += 1;
+					}
+				}*/
+			}, 2000);
+
+		function moveOnMax(field, event, prevFieldID, nextFieldID) {
+			var KeyID = event.keyCode;
+			if (KeyID == 8 || KeyID == 46){
+                        	field.value = "";
+				if (prevFieldID != "na"){
+					document.getElementById(prevFieldID).focus();
+				}
+			} else if (field.value.length == 1 && nextFieldID != "na") {
+				document.getElementById(nextFieldID).focus();
+			}
+		}
+
+		
+		
+		function displayAuth(){
+			clearPin();
+			document.getElementById("auth-error").value = "";
+			var authBlock=document.getElementsByClassName('auth-div');
+			var buttonBlock=document.getElementsByClassName('button-div');
+			var loaderBlock=document.getElementsByClassName('loader-div');
+			loaderBlock[0].style.display='none';
+			buttonBlock[0].style.display='none';
+			authBlock[0].style.display='flex';
+			authBlock[1].style.display='flex';
+			authBlock[2].style.display='flex';
+                        loaderDisplayed = false;
+		}
+
+		function displayButton(){
+			clearPin();
+			document.getElementById("auth-error").value = "";
+			var authBlock=document.getElementsByClassName('auth-div');
+			var buttonBlock=document.getElementsByClassName('button-div');
+                        var loaderBlock=document.getElementsByClassName('loader-div');
+			loaderBlock[0].style.display='none';
+			buttonBlock[0].style.display='flex';
+			authBlock[0].style.display='none';
+			authBlock[1].style.display='none';
+			authBlock[2].style.display='none';
+                        loaderDisplayed = false;
+		}
+
+		function displayLoader(){
+			clearPin();
+			document.getElementById("auth-error").value = "";
+                        var authBlock=document.getElementsByClassName('auth-div');
+                        var buttonBlock=document.getElementsByClassName('button-div');
+                        var loaderBlock=document.getElementsByClassName('loader-div');
+			loaderBlock[0].style.display='flex';
+			buttonBlock[0].style.display='none';
+                        authBlock[0].style.display='none';
+                        authBlock[1].style.display='none';
+                        authBlock[2].style.display='none';
+			loaderDisplayed = true;
+		}
+
+		function clearPin(){
+	                document.getElementById("p1").value = "";
+                        document.getElementById("p2").value = "";
+                        document.getElementById("p3").value = "";
+                        document.getElementById("p4").value = "";
+                        document.getElementById("p5").value = "";
+                        document.getElementById("p6").value = "";
+                        document.getElementById("p7").value = "";
+                        document.getElementById("p8").value = "";
+		}
+
+		function readPin(){
+			let str = document.getElementById("p1").value;
+			str += document.getElementById("p2").value;
+			str += document.getElementById("p3").value;
+			str += document.getElementById("p4").value;
+			str += document.getElementById("p5").value;
+			str += document.getElementById("p6").value;
+			str += document.getElementById("p7").value;
+			str += document.getElementById("p8").value;
+			return str;
+		}
+
+                function callAuth(){
+			let str = readPin();
+			console.log(str.toLowerCase());
+			if (str.toLowerCase() == "wmt04686" || str.toLowerCase() == "wmt02685"){
+				$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+                                $.getJSON($SCRIPT_ROOT+"/toggle_state",
+                                        function(data) {
+                                                console.log(data.status);
+                                        });
+				document.getElementById("auth-error").value = "";
+				reloadPage();
+			} else {
+				clearPin();
+				document.getElementById("auth-error").innerHTML = "Incorrect Login Credentials!";
+				$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+                                $.getJSON($SCRIPT_ROOT+"/error_state",
+                                        function(data) {
+                                                console.log(data.status);
+                                        });
+			}
+		}
+		
+		function reloadPage(){
+			window.location.reload(true);
+		}
+
+	</script>
+
+</head>
+<body>
+	<div class="content">
+		<div class="center-div">
+			<img src="{{ url_for('static', filename= 'images/walmart_logo.png') }}" alt="Walmart" width="300px">
+		</div>
+		<h1 id="access-status">STATUS: Receiving Vehicle Status . . . .</h1>
+		<div class="center-div button-div">
+			<button onClick="displayAuth()" class="button"><font size="+3" ><span id="choice-state">Start</span></font> <br> Loading/Unloading</button>
+		</div>
+		<div class="center-div row3 auth-div">
+			<p class="error-status" id ="auth-error"> </p>
+		</div>
+		<div class="center-div row3 auth-div">
+			<input type="text" maxlength=1 id="p1" onkeyup="moveOnMax(this,event,'na','p2')" />
+			<input type="text" maxlength=1 id="p2" onkeyup="moveOnMax(this,event,'p1','p3')" />
+			<input type="text" maxlength=1 id="p3" onkeyup="moveOnMax(this,event,'p2','p4')" />
+			<input type="text" maxlength=1 id="p4" onkeyup="moveOnMax(this,event,'p3','p5')" />
+                        <input type="text" maxlength=1 id="p5" onkeyup="moveOnMax(this,event,'p4','p6')" />
+                        <input type="text" maxlength=1 id="p6" onkeyup="moveOnMax(this,event,'p5','p7')" />
+                        <input type="text" maxlength=1 id="p7" onkeyup="moveOnMax(this,event,'p6','p8')" />
+			<input type="text" maxlength=1 id="p8" onkeyup="moveOnMax(this,event,'p7','na')" />
+		</div>
+		<div class="center-div row3 auth-div">
+			<button onClick="reloadPage()" class="button choice-button">&lt;&lt; Back</button>
+			<button onClick="callAuth()" class="button choice-button">Submit &gt;&gt; </button>
+		</div>
+                <div class="center-div row3 loader-div">
+			<div class="loader"></div>
+		</div>
+
+	</div>
+
+</body>
+</html>
